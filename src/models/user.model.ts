@@ -1,40 +1,29 @@
-import mongoose, { Document, Schema } from 'mongoose';
+import mongoose, { Schema, Document } from 'mongoose';
+import bcrypt from 'bcrypt';
 
 export interface IUser extends Document {
   name: string;
   email: string;
-  age?: number;
+  password: string;
 }
 
 const userSchema = new Schema<IUser>(
   {
-    name: {
-      type: String,
-      required: true,
-      trim: true
-    },
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-      lowercase: true
-    },
-    age: {
-      type: Number
-    }
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true }
   },
-  {
-    timestamps: true
-  }
+  { timestamps: true }
 );
 
-const User = mongoose.model<IUser>('User', userSchema);
-export default User;
+/**
+ * 🔐 Pre-save hook to hash password
+ */
+userSchema.pre('save', async function () {
+  // this refers to the document
+  if (!this.isModified('password')) return;
 
-// (Must Know)
+  this.password = await bcrypt.hash(this.password, 10);
+});
 
-// Difference between Schema and Model?
-
-// Does unique: true guarantee uniqueness?
-
-// Why not validate email in controller?
+export default mongoose.model<IUser>('User', userSchema);
