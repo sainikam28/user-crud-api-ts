@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import User from '../models/user.model';
 import asyncHandler from '../utils/asyncHandler';
+import { ApiError } from '../errors/apiError';
 
 // CREATE
 export const createUser = asyncHandler(
@@ -24,8 +25,7 @@ export const getUserById = asyncHandler(
     const user = await User.findById(req.params.id);
 
     if (!user) {
-      res.status(404);
-      throw new Error('User not found');
+      throw new ApiError(404, 'User not found');
     }
 
     res.json(user);
@@ -42,8 +42,7 @@ export const updateUser = asyncHandler(
     );
 
     if (!user) {
-      res.status(404);
-      throw new Error('User not found');
+      throw new ApiError(404, 'User not found');
     }
 
     res.json(user);
@@ -56,8 +55,7 @@ export const deleteUser = asyncHandler(
     const user = await User.findByIdAndDelete(req.params.id);
 
     if (!user) {
-      res.status(404);
-      throw new Error('User not found');
+      throw new ApiError(404, 'User not found');
     }
 
     res.status(204).send();

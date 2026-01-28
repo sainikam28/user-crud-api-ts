@@ -1,20 +1,27 @@
 import { Request, Response, NextFunction } from 'express';
+import { ApiError } from '../errors/apiError';
 
-const errorMiddleware = (
+const errorHandler = (
   err: Error,
   _req: Request,
   res: Response,
   _next: NextFunction
 ) => {
-  const statusCode = res.statusCode || 500;
+  if (err instanceof ApiError) {
+    return res.status(err.statusCode).json({
+      message: err.message
+    });
+  }
 
-  res.status(statusCode).json({
-    message: err.message,
-    stack: process.env.NODE_ENV === 'production' ? undefined : err.stack
+  console.error('Unhandled Error:', err);
+
+  return res.status(500).json({
+    message: 'Something went wrong'
   });
 };
 
-export default errorMiddleware;
+export default errorHandler;
+
 // Controller throws error
 //         ↓
 // asyncHandler catches
