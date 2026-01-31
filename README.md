@@ -10,3 +10,11 @@ Simple CRUD backend API built using Node.js, Express, MongoDB, and TypeScript.
 ## Run locally
 npm install
 npm run dev
+
+| Operation | Auth | RBAC         | Response | Secure |
+| --------- | ---- | ------------ | -------- | ------ |
+| Create    | ✅    | ADMIN        | ✅        | ✅      |
+| Get all   | ✅    | ADMIN        | ✅        | ✅      |
+| Get one   | ✅    | SELF / ADMIN | ✅        | ✅      |
+| Update    | ✅    | SELF / ADMIN | ✅        | ✅      |
+| Delete    | ✅    | ADMIN        | ✅        | ✅      |
