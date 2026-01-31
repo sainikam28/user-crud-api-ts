@@ -42,8 +42,11 @@ export const createUser = async (
   password: string,
   role: 'USER' | 'ADMIN' = 'USER'
 ) => {
+  console.log('[createUser Service] Creating user for email:', email, 'name:', name, 'role:', role);
+  
   const existing = await User.findOne({ email });
   if (existing) {
+    console.log('[createUser Service] User already exists for email:', email);
     throw new ApiError(409, 'User already exists');
   }
 
@@ -55,6 +58,7 @@ export const createUser = async (
   });
 
   await user.save();
+  console.log('[createUser Service] User created successfully for email:', email, 'id:', user._id);
 
   return {
     id: user._id,
@@ -68,15 +72,20 @@ export const getUserById = async (
   userId: string,
   requester: { id: string; role: 'USER' | 'ADMIN' }
 ) => {
+  console.log('[getUserById Service] Fetching user:', userId, 'by requester:', requester.id, 'role:', requester.role);
+  
   if (requester.role !== 'ADMIN' && requester.id !== userId) {
+    console.log('[getUserById Service] Access denied for requester:', requester.id, 'trying to access:', userId);
     throw new ApiError(403, 'Forbidden');
   }
 
   const user = await User.findById(userId).select('-password');
   if (!user) {
+    console.log('[getUserById Service] User not found:', userId);
     throw new ApiError(404, 'User not found');
   }
 
+  console.log('[getUserById Service] User fetched successfully:', userId);
   return user;
 };
 
@@ -85,12 +94,16 @@ export const updateUser = async (
   data: Partial<{ name: string; password: string }>,
   requester: { id: string; role: 'USER' | 'ADMIN' }
 ) => {
+  console.log('[updateUser Service] Updating user:', userId, 'by requester:', requester.id, 'role:', requester.role);
+  
   if (requester.role !== 'ADMIN' && requester.id !== userId) {
+    console.log('[updateUser Service] Access denied for requester:', requester.id, 'trying to update:', userId);
     throw new ApiError(403, 'Forbidden');
   }
 
   const user = await User.findById(userId);
   if (!user) {
+    console.log('[updateUser Service] User not found:', userId);
     throw new ApiError(404, 'User not found');
   }
 
@@ -98,6 +111,7 @@ export const updateUser = async (
   if (data.password) user.password = data.password;
 
   await user.save();
+  console.log('[updateUser Service] User updated successfully:', userId);
 
   return {
     id: user._id,
@@ -108,12 +122,17 @@ export const updateUser = async (
 };
 
 export const deleteUser = async (userId: string) => {
+  console.log('[deleteUser Service] Deleting user:', userId);
+  
   const user = await User.findByIdAndDelete(userId);
   if (!user) {
+    console.log('[deleteUser Service] User not found:', userId);
     throw new ApiError(404, 'User not found');
   }
-
-  return true;
+  
+  console.log('[deleteUser Service] User deleted successfully:', userId);
+  return user;
 };
+
 
 

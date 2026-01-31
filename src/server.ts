@@ -9,9 +9,13 @@ import connectDB from './config/db';
 // ✔️ Because app should not accept requests if DB is unavailable
 // ✔️ This is called fail-fast design
 
+console.log('[server.ts] Starting application initialization...');
+console.log('[server.ts] Connecting to database...');
+
 connectDB();
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-    console.log('Server running on port', PORT);
-})
+    console.log('[server.ts] ✅ Server is running on port', PORT);
+    console.log('[server.ts] Environment:', process.env.NODE_ENV || 'development');
+});
