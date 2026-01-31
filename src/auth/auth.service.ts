@@ -16,7 +16,7 @@ export const loginUser = async (email: string, password: string, role: string) =
     throw new ApiError(401, 'Invalid credentials');;
   }
 
-  const token = signToken({ id: user._id, email: user.email, role: user.role });
+  const token = signToken({ id: user._id.toString(), email: user.email, role: user.role });
 
   return token;
 };
@@ -32,5 +32,5 @@ export const registerUser = async (name: string, email: string, password: string
   const user = new User({ name, email, password, role });
   await user.save();
 
-  return signToken({ id: user._id, email: user.email, role: user.role });
+  return signToken({ id: user._id.toString(), email: user.email, role: user.role });
 }

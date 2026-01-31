@@ -2,7 +2,6 @@ import express from 'express';
 import userRoutes from './routes/user.routes';
 import errorMiddleware from './middlewares/error.middleware';
 import authRoutes from './auth/auth.routes';
-import errorHandler from './middlewares/error.middleware';
 
 
 const app = express();
@@ -12,7 +11,6 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 
 app.use(errorMiddleware);  
-app.use(errorHandler);
 
 export default app;
 
